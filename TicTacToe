@@ -1,0 +1,51 @@
+from itertools import cycle
+
+class game():
+    def __init__(self):
+        self.board=[[0, 0 , 0],[0,0,0],[0,0,0]]
+        self.currentPlayer=1
+        self.myIterator = cycle(range(1,2))
+        self.keepPlaying=True
+        #self.posiblesresultados=0
+        self.tipoDeJuego=2 #Modificar en tkinter, estara en 2 por default
+
+    def restart(self):
+        self.__init__()
+        if bool(int(input("Volver a jugar?: "))): print(self.keepPlaying)
+    def playermov(self):  #ubic1:x ubic2:y
+        self.currentPlayer = self.myIterator.__next__() ##Quiero numero 1 y dos, no 0 y 1 #todo crear rango 1 y 2 y no 0 y 1
+        print("Jugador" +str(self.currentPlayer)+", ingresar la ubicacion de su movimiento: ")
+        ubication = list(map(int, input().split()))
+        if self.board[ubication[0]][ubication[1]]==0: self.board[ubication[0]][ubication[1]]=self.currentPlayer
+        else:
+            print("elegir una ubicacion no utilizada")
+            self.myIterator.__next__()
+            self.playermov()
+    def checkWin(self):
+        if sum(x.count(self.currentPlayer) for x in self.board)>=3:
+            for y in self.board: #check rows
+                if y.count(self.currentPlayer)==3:
+                    print("Player"+str(self.currentPlayer)+" wins")
+                    return self.restart()
+            for x in range(3):
+                if self.board[0][x]==self.currentPlayer and self.board[1][x]==self.currentPlayer and self.board[2][x]==self.currentPlayer:
+                    print("Player" + str(self.currentPlayer) + " wins")
+                    return self.restart()
+            if self.board[0][0]==self.currentPlayer and self.board[1][1]==self.currentPlayer and self.board[2][2]==self.currentPlayer:
+                print("Player" + str(self.currentPlayer) + " wins")
+                return self.restart()
+            if self.board[0][2]==self.currentPlayer and self.board[1][1]==self.currentPlayer and self.board[2][0]==self.currentPlayer:
+                print("Player" + str(self.currentPlayer) + " wins")
+                return self.restart()
+
+    def play(self):
+        sumaMovimientos=1
+        while (self.keepPlaying):
+            if sumaMovimientos==9:
+                print("Its a tie") #
+                return self.restart() #Para TKinter
+            self.playermov()
+            self.checkWin()
+            sumaMovimientos+=1
+ticTacGame=game()
+ticTacGame.play()
